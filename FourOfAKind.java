@@ -79,6 +79,11 @@ public class FourOfAKind {
 			if (curPlayer == HUMAN)
 			{
 				showHeldCards(hCards);
+//----				
+				if (discardPile.topCard() != null)
+					System.out.println("Top card from the discard pile: " +
+										discardPile.topCard());
+//----
 				int choice = 0;
 				while (choice < 'A' || choice > 'D')
 				{
@@ -86,14 +91,38 @@ public class FourOfAKind {
 									"C, D)? ");
 					switch (choice)
 					{
-						case 'a': choice = 'A'; break;
-						case 'b': choice = 'B'; break;
-						case 'c': choice = 'C'; break;
-						case 'd': choice = 'D'; 
+					case 'a': choice = 'A'; break;
+					case 'b': choice = 'B'; break;
+					case 'c': choice = 'C'; break;
+					case 'd': choice = 'D'; 
 					}							
 				}
-				discardPile.setTopCard(hCards[choice-'A']);
-				hCards[choice-'A'] = deck.deal();
+//----
+				int pickdiscard = 3;
+				while (pickdiscard != 0 && pickdiscard != 1){
+					pickdiscard = prompt("Do you want to pick up from the " +
+										"discard pile? (Y)es or (N)o");
+					switch (pickdiscard)
+					{
+					case 'y': pickdiscard = 1; break;
+					case 'n': pickdiscard = 0; 
+					}
+				}
+				if ((pickdiscard == 1) && (discardPile.topCard() != null))
+				{
+					deck.putBack(hCards[choice-'A']);
+					hCards[choice-'A'] = discardPile.getTopCard();
+				}
+				else
+				{
+					if (discardPile.topCard() == null)
+					System.out.println("Your discard pile is empty, " +
+									   "you have to pick up from the deck");
+				
+					discardPile.setTopCard(hCards[choice-'A']);
+					hCards[choice-'A'] = deck.deal();	
+				}			
+//----
 				if (isFourOfAKind(hCards))
 				{
 					System.out.println();
